@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Electrical Safety Newsletter Quiz</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:system-ui,sans-serif;background:#f1f5f9;min-height:100vh;padding:20px}
+  .container{max-width:760px;margin:0 auto}
+  .header{background:#fff;border-radius:16px;padding:20px 24px;margin-bottom:20px;box-shadow:0 1px 4px #0001}
+  .header h1{font-size:22px;font-weight:700;color:#0f172a}
+  .header p{font-size:13px;color:#64748b;margin-top:6px}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .badge{background:#f1f5f9;color:#374151;border-radius:8px;padding:3px 10px;font-size:12px;font-weight:600}
+  .badge.green{background:#16a34a;color:#fff}
+  .badge.dark{background:#0f172a;color:#fff}
+  .tabs{display:flex;gap:8px;margin-bottom:20px}
+  .tab{padding:9px 22px;border-radius:12px;border:none;cursor:pointer;font-weight:600;font-size:14px;background:#e2e8f0;color:#334155}
+  .tab.active{background:#0f172a;color:#fff}
+  .card{background:#fff;border-radius:16px;padding:24px;box-shadow:0 1px 4px #0001;margin-bottom:20px}
+  .card h2{font-size:17px;font-weight:700;margin-bottom:4px}
+  .card .sub{font-size:13px;color:#64748b;margin-bottom:20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+  @media(max-width:540px){.grid2{grid-template-columns:1fr}}
+  label.field{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:5px}
+  input,select{width:100%;padding:8px 12px;border-radius:10px;border:1px solid #e2e8f0;font-size:14px;outline:none;background:#fff}
+  .progress-wrap{background:#e2e8f0;border-radius:99px;height:8px;overflow:hidden;margin-top:6px}
+  .progress-bar{height:100%;background:#0f172a;border-radius:99px;transition:width .3s;width:0%}
+  .progress-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+  .q-card{border-radius:14px;border:1px solid #e2e8f0;background:#f8fafc;padding:16px;margin-bottom:12px}
+  .q-header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+  .q-text{font-weight:600;font-size:14px;line-height:1.4}
+  .opt{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:9px 12px;cursor:pointer;font-size:13px;margin-bottom:6px;transition:border .15s,background .15s}
+  .opt.selected{background:#eff6ff;border-color:#93c5fd}
+  .opt input{width:auto;padding:0}
+  .btn{width:100%;padding:11px;border-radius:12px;border:none;cursor:pointer;font-weight:600;font-size:14px;background:#0f172a;color:#fff;margin-top:4px}
+  .btn:disabled{opacity:0.6;cursor:not-allowed}
+  .btn.outline{background:#f1f5f9;color:#0f172a}
+  .alert{padding:12px 16px;border-radius:12px;font-size:13px;margin-top:12px}
+  .alert.success{background:#dcfce7;color:#166534}
+  .alert.error{background:#fee2e2;color:#991b1b}
+  .alert.info{background:#e0f2fe;color:#0c4a6e}
+  .warn{color:#dc2626;font-size:12px;margin-top:4px}
+  .rules p{font-size:13px;color:#374151;margin-bottom:7px}
+  .pw-row{display:flex;gap:8px;margin-bottom:10px}
+  .pw-row input{flex:1}
+  .pw-toggle{padding:8px 12px;border-radius:10px;border:1px solid #e2e8f0;cursor:pointer;background:#f1f5f9;font-size:14px}
+  .stat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+  @media(max-width:600px){.stat-grid{grid-template-columns:repeat(3,1fr)}}
+  .stat-card{background:#fff;border-radius:14px;padding:14px 16px;box-shadow:0 1px 4px #0001}
+  .stat-card .stat-label{font-size:12px;color:#64748b}
+  .stat-card .stat-val{font-size:26px;font-weight:700;margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{text-align:left;padding:8px 10px;background:#f8fafc;border-bottom:1px solid #e2e8f0;font-weight:600;color:#374151}
+  td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+  .score-badge{color:#fff;border-radius:8px;padding:2px 10px;font-weight:700;font-size:13px}
+  .locked{text-align:center;padding:50px 20px}
+  .locked .icon{font-size:40px;margin-bottom:12px}
+  #tab-quiz,#tab-admin{display:block}
+  .spinner{display:inline-block;width:14px;height:14px;border:2px solid #ffffff55;border-top:2px solid #fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}
+  .spinner.dark{border:2px solid #0f172a33;border-top:2px solid #0f172a}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .table-wrap{overflow-x:auto;border-radius:12px;border:1px solid #e2e8f0}
+  .overview{background:#f8fafc;border-radius:12px;padding:14px;margin-bottom:12px;font-size:13px}
+  .overview h4{font-weight:600;margin-bottom:8px}
+  .overview p{margin:3px 0}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>⚡ Electrical Safety Newsletter Quiz</h1>
+    <p id="firebase-status">Connecting to Firebase...</p>
+    <div class="badges">
+      <span class="badge">10 Questions</span>
+      <span class="badge">One Attempt</span>
+      <span class="badge dark">Pass: 80%</span>
+      <span class="badge green" id="live-badge" style="display:none">🔥 Firebase Live</span>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('quiz')">📋 Employee Quiz</button>
+    <button class="tab" onclick="showTab('admin')">📊 Admin Dashboard</button>
+  </div>
+
+  <!-- QUIZ TAB -->
+  <div id="tab-quiz">
+    <div class="card">
+      <h2>Employee Registration & Quiz</h2>
+      <p class="sub">Each Employee ID can submit the quiz only once. Results saved to Firebase.</p>
+      <div class="grid2">
+        <div>
+          <label class="field">Employee Name</label>
+          <input id="f-name" placeholder="Full name" oninput="checkId()"/>
+        </div>
+        <div>
+          <label class="field">Employee ID</label>
+          <input id="f-id" placeholder="e.g. UAE-041" oninput="checkId()"/>
+          <p class="warn" id="id-warn" style="display:none">⚠️ This ID has already been used.</p>
+        </div>
+        <div>
+          <label class="field">Department</label>
+          <input id="f-dept" placeholder="Operations / Maintenance"/>
+        </div>
+        <div>
+          <label class="field">Location</label>
+          <select id="f-loc"><option>UAE</option><option>KSA</option></select>
+        </div>
+      </div>
+
+      <div class="progress-label"><span>Quiz completion</span><span id="pct">0%</span></div>
+      <div class="progress-wrap"><div class="progress-bar" id="prog"></div></div>
+
+      <div style="margin-top:20px" id="questions"></div>
+
+      <button class="btn" id="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+      <div id="quiz-msg" style="display:none" class="alert"></div>
+    </div>
+
+    <div class="card rules">
+      <h2 style="margin-bottom:12px">📌 Quiz Rules</h2>
+      <p>• Based on two electrical safety newsletters.</p>
+      <p>• One attempt per unique Employee ID.</p>
+      <p>• Scoring is automatic after submission.</p>
+      <p>• Pass mark is 80%.</p>
+      <p>• All results are saved to Firebase in real time.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:4px">🔒 Admin Login</h2>
+      <p class="sub">Password protected access to the dashboard.</p>
+      <label class="field">Admin Password</label>
+      <div class="pw-row">
+        <input type="password" id="pw-input" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')unlockAdmin()"/>
+        <button class="pw-toggle" onclick="togglePw()">👁</button>
+      </div>
+      <button class="btn outline" id="unlock-btn" onclick="unlockAdmin()">🔓 Unlock Admin Dashboard</button>
+      <p style="font-size:11px;color:#94a3b8;margin-top:8px">Demo password: Admin@123</p>
+    </div>
+  </div>
+
+  <!-- ADMIN TAB -->
+  <div id="tab-admin" style="display:none">
+    <div id="admin-locked" class="card locked">
+      <div class="icon">🔐</div>
+      <h3>Admin access required</h3>
+      <p style="color:#64748b;font-size:13px;margin-top:8px">Enter the password in the Admin Login panel on the quiz tab.</p>
+    </div>
+    <div id="admin-content" style="display:none">
+      <div class="stat-grid" id="stat-grid"></div>
+      <div class="card">
+        <h2 style="margin-bottom:14px">Engagement Overview</h2>
+        <div class="overview" id="overview-box"></div>
+        <button class="btn" onclick="refreshAdmin()"><span id="refresh-spin" style="display:none" class="spinner"></span>🔄 Refresh Data</button>
+      </div>
+      <div class="card">
+        <h2 style="margin-bottom:14px">Participant Scores</h2>
+        <div class="table-wrap"><table><thead><tr><th>Name</th><th>Employee ID</th><th>Dept</th><th>Location</th><th>Score</th><th>Status</th><th>Submitted</th></tr></thead><tbody id="results-body"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Config ──────────────────────────────────────────────────────────────────
+const PROJECT_ID = "hse-quiz-a";
+const API_KEY    = "AIzaSyBambq4wpVVeT3FyNnBUkMpfBhNrMucHbE";
+const BASE      = `https://firestore.googleapis.com/v1/projects/${PROJECT_ID}/databases/(default)/documents`;
+const PASS_MARK  = 80;
+const ADMIN_PW   = "Admin@123";
+
+// ── Questions ────────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {id:1,nl:"Newsletter 1",q:"According to the electrical safety newsletter, electrical hazards can cause:",opts:["Only minor inconvenience","Burns, nerve damage, cardiac arrest, or death","Damage only to tools","No serious injuries if gloves are worn"],ans:1},
+  {id:2,nl:"Newsletter 1",q:"Which of the following is listed as a common electrical hazard?",opts:["Clearly labeled circuit panels","Damaged or exposed cables","Dry, protected work areas","Authorized maintenance records"],ans:1},
+  {id:3,nl:"Newsletter 1",q:"What should employees report immediately?",opts:["Only equipment that is fully broken","Sparks, shocks, burning smells, or overheating equipment","Only missing stationery","Routine lighting usage"],ans:1},
+  {id:4,nl:"Newsletter 1",q:"Which safety rule is correct?",opts:["Use damaged cables until replacement arrives","Carry out electrical work even if not authorized","Keep areas dry and report electrical hazards immediately","Ignore overheating if the machine is still operating"],ans:2},
+  {id:5,nl:"Newsletter 2",q:"How low can electrical current be and still become fatal?",opts:["30 milliamps (0.03 amps)","3 amps","30 amps","0.3 milliamps"],ans:0},
+  {id:6,nl:"Newsletter 2",q:"Which PPE is required for electrical work?",opts:["Safety vest only","Insulated gloves, Class E helmet, and arc-rated clothing","Leather shoes only","No PPE if the task is quick"],ans:1},
+  {id:7,nl:"Newsletter 2",q:"Which procedure prevents unexpected energization during maintenance?",opts:["Hot work permit","Lockout/Tagout","Toolbox talk","Housekeeping checklist"],ans:1},
+  {id:8,nl:"Newsletter 2",q:"Why is proper grounding important?",opts:["It reduces paperwork","It prevents dangerous voltage buildup and electrical shocks","It makes equipment lighter","It replaces PPE requirements"],ans:1},
+  {id:9,nl:"Newsletter 2",q:"Who should perform repairs on electrical equipment?",opts:["Any available employee","Only trained and authorized personnel","Visitors with supervision","Anyone after watching a video"],ans:1},
+  {id:10,nl:"Newsletter 2",q:"Which practice best supports long-term electrical safety?",opts:["Skipping inspections when busy","Relying on past experience only","Regular inspections, awareness, and refresher training","Using temporary fixes permanently"],ans:2},
+];
+
+// ── State ────────────────────────────────────────────────────────────────────
+let submissions = [];
+let answers = {};
+let adminUnlocked = false;
+
+// ── Firestore REST ───────────────────────────────────────────────────────────
+function toFS(obj) {
+  const fields = {};
+  for (const [k,v] of Object.entries(obj)) {
+    if (typeof v === "string") fields[k] = {stringValue: v};
+    else if (typeof v === "number") fields[k] = {integerValue: v};
+  }
+  return {fields};
+}
+function fromFS(doc) {
+  if (!doc.fields) return {};
+  const out = {id: doc.name?.split("/").pop()};
+  for (const [k,v] of Object.entries(doc.fields)) {
+    out[k] = v.stringValue ?? (v.integerValue !== undefined ? Number(v.integerValue) : null) ?? v.timestampValue ?? null;
+  }
+  return out;
+}
+async function fsGetAll() {
+  const res = await fetch(`${BASE}/submissions?key=${API_KEY}`);
+  const data = await res.json();
+  if (!data.documents) return [];
+  return data.documents.map(fromFS).sort((a,b) => (b.submittedAt||"").localeCompare(a.submittedAt||""));
+}
+async function fsGet(id) {
+  const res = await fetch(`${BASE}/submissions/${id}?key=${API_KEY}`);
+  if (res.status === 404) return null;
+  const data = await res.json();
+  return data.fields ? fromFS(data) : null;
+}
+async function fsSet(id, obj) {
+  const body = toFS({...obj, submittedAt: new Date().toISOString()});
+  const res = await fetch(`${BASE}/submissions/${id}?key=${API_KEY}`, {method:"PATCH", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body)});
+  if (!res.ok) throw new Error("Write failed");
+}
+
+// ── Build Questions ──────────────────────────────────────────────────────────
+function buildQuestions() {
+  const container = document.getElementById("questions");
+  QUESTIONS.forEach((q, i) => {
+    const div = document.createElement("div");
+    div.className = "q-card";
+    div.innerHTML = `
+      <div class="q-header">
+        <p class="q-text">${i+1}. ${q.q}</p>
+        <span class="badge">${q.nl}</span>
+      </div>
+      ${q.opts.map((opt, oi) => `
+        <label class="opt" id="opt-${q.id}-${oi}" onclick="selectAnswer(${q.id},${oi})">
+          <input type="radio" name="q${q.id}" value="${oi}" style="pointer-events:none"/> ${opt}
+        </label>`).join("")}`;
+    container.appendChild(div);
+  });
+}
+
+function selectAnswer(qid, oi) {
+  answers[qid] = oi;
+  QUESTIONS.find(q => q.id === qid).opts.forEach((_,i) => {
+    const el = document.getElementById(`opt-${qid}-${i}`);
+    el.classList.toggle("selected", i === oi);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const pct = Math.round(Object.keys(answers).length / QUESTIONS.length * 100);
+  document.getElementById("prog").style.width = pct + "%";
+  document.getElementById("pct").textContent = pct + "%";
+}
+
+// ── ID check ─────────────────────────────────────────────────────────────────
+function checkId() {
+  const id = document.getElementById("f-id").value.trim().toUpperCase();
+  const exists = submissions.some(s => s.employeeId?.toUpperCase() === id);
+  document.getElementById("id-warn").style.display = exists ? "block" : "none";
+}
+
+// ── Submit ───────────────────────────────────────────────────────────────────
+async function submitQuiz() {
+  const name = document.getElementById("f-name").value.trim();
+  const empId = document.getElementById("f-id").value.trim().toUpperCase();
+  const dept = document.getElementById("f-dept").value.trim();
+  const loc = document.getElementById("f-loc").value;
+
+  if (!name || !empId || !dept) return showMsg("Please complete all employee details.", "error");
+  if (Object.keys(answers).length !== QUESTIONS.length) return showMsg("Please answer all questions before submitting.", "error");
+
+  const btn = document.getElementById("submit-btn");
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+  try {
+    const existing = await fsGet(empId);
+    if (existing) { showMsg("This Employee ID has already completed the quiz.", "error"); btn.disabled=false; btn.textContent="Submit Quiz"; return; }
+
+    const correct = QUESTIONS.filter(q => answers[q.id] === q.ans).length;
+    const score = Math.round(correct / QUESTIONS.length * 100);
+    await fsSet(empId, {employeeId: empId, employeeName: name, department: dept, location: loc, score, correct, total: QUESTIONS.length, status: score >= PASS_MARK ? "Passed" : "Needs Retake"});
+
+    submissions = await fsGetAll();
+    showMsg(`✅ Submitted! Score: ${score}% (${correct}/${QUESTIONS.length}) — ${score >= PASS_MARK ? "Passed 🎉" : "Needs Retake"}`, score >= PASS_MARK ? "success" : "error");
+
+    // Reset form
+    document.getElementById("f-name").value="";
+    document.getElementById("f-id").value="";
+    document.getElementById("f-dept").value="";
+    document.getElementById("f-loc").value="UAE";
+    answers = {};
+    updateProgress();
+    QUESTIONS.forEach(q => q.opts.forEach((_,i) => document.getElementById(`opt-${q.id}-${i}`)?.classList.remove("selected")));
+    document.querySelectorAll('input[type=radio]').forEach(r => r.checked=false);
+  } catch(e) {
+    showMsg("Submission failed. Check your connection and try again.", "error");
+  }
+  btn.disabled=false; btn.textContent="Submit Quiz";
+}
+
+function showMsg(text, type) {
+  const el = document.getElementById("quiz-msg");
+  el.textContent = text; el.className = `alert ${type}`; el.style.display = "block";
+}
+
+// ── Admin ─────────────────────────────────────────────────────────────────────
+async function unlockAdmin() {
+  const pw = document.getElementById("pw-input").value;
+  if (pw !== ADMIN_PW) { alert("Incorrect password."); return; }
+  const btn = document.getElementById("unlock-btn");
+  btn.disabled=true; btn.innerHTML='<span class="spinner dark"></span>Loading...';
+  submissions = await fsGetAll();
+  adminUnlocked = true;
+  renderAdmin();
+  showTab("admin");
+  btn.disabled=false; btn.textContent="🔓 Unlock Admin Dashboard";
+}
+
+async function refreshAdmin() {
+  document.getElementById("refresh-spin").style.display="inline-block";
+  submissions = await fsGetAll();
+  renderAdmin();
+  document.getElementById("refresh-spin").style.display="none";
+}
+
+function renderAdmin() {
+  document.getElementById("admin-locked").style.display="none";
+  document.getElementById("admin-content").style.display="block";
+
+  const total = submissions.length;
+  const avg = total ? Math.round(submissions.reduce((s,r)=>s+r.score,0)/total) : 0;
+  const passed = submissions.filter(r=>r.score>=PASS_MARK).length;
+  const passRate = total ? Math.round(passed/total*100) : 0;
+  const uae = submissions.filter(r=>r.location==="UAE").length;
+  const ksa = submissions.filter(r=>r.location==="KSA").length;
+
+  document.getElementById("stat-grid").innerHTML =
+    [["Participants",total],["Avg Score",avg+"%"],["Pass Rate",passRate+"%"],["UAE",uae],["KSA",ksa]]
+    .map(([l,v])=>`<div class="stat-card"><div class="stat-label">${l}</div><div class="stat-val">${v}</div></div>`).join("");
+
+  document.getElementById("overview-box").innerHTML = `
+    <h4>👥 Participation</h4>
+    <p>Total submissions: <b>${total}</b></p>
+    <p>Passed: <b style="color:#16a34a">${passed}</b></p>
+    <p>Need retake: <b style="color:#dc2626">${total-passed}</b></p>`;
+
+  document.getElementById("results-body").innerHTML = submissions.length === 0
+    ? `<tr><td colspan="7" style="text-align:center;color:#94a3b8;padding:20px">No submissions yet.</td></tr>`
+    : submissions.map(r => {
+        const bg = r.score>=90?"#16a34a":r.score>=PASS_MARK?"#2563eb":"#dc2626";
+        const date = r.submittedAt ? new Date(r.submittedAt).toLocaleString() : "—";
+        return `<tr>
+          <td><b>${r.employeeName||""}</b></td>
+          <td>${r.employeeId||""}</td>
+          <td>${r.department||""}</td>
+          <td>${r.location||""}</td>
+          <td><span class="score-badge" style="background:${bg}">${r.score}%</span></td>
+          <td style="color:${r.score>=PASS_MARK?"#16a34a":"#dc2626"};font-weight:600">${r.status||""}</td>
+          <td style="font-size:12px;color:#64748b">${date}</td>
+        </tr>`;
+      }).join("");
+}
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function showTab(t) {
+  document.getElementById("tab-quiz").style.display = t==="quiz"?"block":"none";
+  document.getElementById("tab-admin").style.display = t==="admin"?"block":"none";
+  document.querySelectorAll(".tab").forEach((el,i)=>el.classList.toggle("active",(i===0&&t==="quiz")||(i===1&&t==="admin")));
+}
+
+function togglePw() {
+  const el = document.getElementById("pw-input");
+  el.type = el.type==="password"?"text":"password";
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+buildQuestions();
+fsGetAll().then(data => {
+  submissions = data;
+  document.getElementById("firebase-status").textContent = "Connected to Firebase — live & shared across all devices.";
+  document.getElementById("live-badge").style.display = "inline";
+}).catch(() => {
+  document.getElementById("firebase-status").textContent = "Could not connect to Firebase. Check your internet connection.";
+});
+</script>
+</body>
+</html>
